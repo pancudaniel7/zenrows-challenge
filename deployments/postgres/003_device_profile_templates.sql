@@ -1,0 +1,5 @@
+INSERT INTO zenrows.device_template (name, device_type, width, height, user_agent, country_code, default_headers) VALUES
+('Desktop Chrome 120 Windows', 'desktop', 1920, 1080, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36', 'US', '{"Accept-Language":"en-US,en;q=0.9"}'::jsonb),
+('Desktop Safari macOS', 'desktop', 1728, 1117, 'Mozilla/5.0 (Macintosh; Intel Mac OS X 13_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.1 Safari/605.1.15', 'GB', '{"Accept-Language":"en-GB,en;q=0.9"}'::jsonb),
+('Mobile Safari iPhone', 'mobile', 390, 844, 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1', 'US', '{"Accept-Language":"en-US,en;q=0.9"}'::jsonb),
+('Mobile Chrome Android', 'mobile', 412, 915, 'Mozilla/5.0 (Linux; Android 13; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36', 'DE', '{"Accept-Language":"de-DE,de;q=0.9"}'::jsonb);
