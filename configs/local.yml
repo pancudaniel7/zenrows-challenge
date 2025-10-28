@@ -1,0 +1,15 @@
+app:
+  name: "zenrow-service"
+  port: 8080
+  host: localhost
+
+log:
+  level: debug
+
+database:
+  host: localhost
+  port: 5432
+  database: zenrow
+  user: app
+  password: app
+  sslmode: disable
