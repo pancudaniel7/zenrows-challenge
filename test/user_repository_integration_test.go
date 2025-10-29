@@ -39,7 +39,7 @@ func TestUserRepositoryIntegration(t *testing.T) {
 				if err != nil {
 					return
 				}
-				
+
 				require.NoError(t, err)
 				require.NotZero(t, userID)
 				require.NotZero(t, passHash)
