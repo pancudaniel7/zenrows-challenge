@@ -9,7 +9,7 @@ import (
 	"github.com/gofiber/fiber/v3"
 )
 
-func BasicAuthCheckMiddleware(svc *usecase.AuthenticationService) fiber.Handler {
+func BasicAuthCheckMiddleware(svc *usecase.AuthenticationServiceImpl) fiber.Handler {
 	return func(c fiber.Ctx) error {
 		h := c.Get("Authorization")
 		if h == "" {

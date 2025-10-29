@@ -21,7 +21,7 @@ func TestDeviceTemplateRepositoryIntegration(t *testing.T) {
 		assert.FailNow(t, err.Error())
 	}
 	logger := applog.NewAppDefaultLogger()
-	r := repo.NewDeviceTemplateImplementation(logger, dbConn)
+	r := repo.NewDeviceTemplateRepoImpl(logger, dbConn)
 
 	tests := []struct {
 		name string

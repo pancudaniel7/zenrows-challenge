@@ -10,17 +10,17 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-type AuthenticationService struct {
+type AuthenticationServiceImpl struct {
 	log      applog.AppLogger
 	wg       *sync.WaitGroup
 	userRepo port.UserRepo
 }
 
-func NewAuthenticationService(log applog.AppLogger, wg *sync.WaitGroup, ur port.UserRepo) *AuthenticationService {
-	return &AuthenticationService{log: log, wg: wg, userRepo: ur}
+func NewAuthenticationService(log applog.AppLogger, wg *sync.WaitGroup, ur port.UserRepo) *AuthenticationServiceImpl {
+	return &AuthenticationServiceImpl{log: log, wg: wg, userRepo: ur}
 }
 
-func (s *AuthenticationService) CheckCredentials(username string, password string) (string, error) {
+func (s *AuthenticationServiceImpl) CheckCredentials(username string, password string) (string, error) {
 	user := entity.User{
 		Username: username,
 	}
@@ -32,7 +32,7 @@ func (s *AuthenticationService) CheckCredentials(username string, password strin
 			Cause: err,
 		}
 	}
-	
+
 	if userID == "" || passwordHash == "" {
 		return "", &apperr.NotAuthorizedErr{
 			Msg:   "Unauthorized",

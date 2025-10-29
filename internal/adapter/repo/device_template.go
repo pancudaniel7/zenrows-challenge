@@ -7,16 +7,16 @@ import (
 	"gorm.io/gorm"
 )
 
-type DeviceTemplateImplementation struct {
+type DeviceTemplateRepoImpl struct {
 	log applog.AppLogger
 	db  *gorm.DB
 }
 
-func NewDeviceTemplateImplementation(log applog.AppLogger, db *gorm.DB) *DeviceTemplateImplementation {
-	return &DeviceTemplateImplementation{log: log, db: db}
+func NewDeviceTemplateRepoImpl(log applog.AppLogger, db *gorm.DB) *DeviceTemplateRepoImpl {
+	return &DeviceTemplateRepoImpl{log: log, db: db}
 }
 
-func (r *DeviceTemplateImplementation) GetDeviceTemplates() ([]entity.DeviceTemplate, error) {
+func (r *DeviceTemplateRepoImpl) GetDeviceTemplates() ([]entity.DeviceTemplate, error) {
 	var out []entity.DeviceTemplate
 	if err := r.db.Find(&out).Error; err != nil {
 		return nil, err
