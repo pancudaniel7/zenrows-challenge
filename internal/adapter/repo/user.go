@@ -8,13 +8,13 @@ import (
 	"gorm.io/gorm"
 )
 
-type UserRepo struct {
+type UserRepoImpl struct {
 	db *gorm.DB
 }
 
-func NewUserRepo(db *gorm.DB) *UserRepo { return &UserRepo{db: db} }
+func NewUserRepoImpl(db *gorm.DB) *UserRepoImpl { return &UserRepoImpl{db: db} }
 
-func (r *UserRepo) RetrieveCredentials(u entity.User) (string, string, error) {
+func (r *UserRepoImpl) RetrieveCredentials(u entity.User) (string, string, error) {
 	var found entity.User
 
 	err := r.db.Where("username = ?", u.Username).First(&found).Error

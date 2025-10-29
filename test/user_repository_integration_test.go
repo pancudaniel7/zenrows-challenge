@@ -21,7 +21,7 @@ func TestUserRepositoryIntegration(t *testing.T) {
 		assert.FailNow(t, err.Error())
 	}
 
-	r := repo.NewUserRepo(dbConn)
+	r := repo.NewUserRepoImpl(dbConn)
 
 	tests := []struct {
 		name string
