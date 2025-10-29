@@ -6,6 +6,8 @@ import (
 	"zenrows-challenge/internal/core/entity"
 	"zenrows-challenge/test/util"
 
+	"zenrows-challenge/internal/pkg/applog"
+
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"golang.org/x/crypto/bcrypt"
@@ -20,8 +22,8 @@ func TestUserRepositoryIntegration(t *testing.T) {
 	if err != nil {
 		assert.FailNow(t, err.Error())
 	}
-
-	r := repo.NewUserRepoImpl(dbConn)
+	logger := applog.NewAppDefaultLogger()
+	r := repo.NewUserRepoImpl(logger, dbConn)
 
 	tests := []struct {
 		name string
