@@ -4,12 +4,12 @@ import (
 	"encoding/base64"
 	"strings"
 
-	"zenrows-challenge/internal/core/usecase"
+	"zenrows-challenge/internal/core/port"
 
 	"github.com/gofiber/fiber/v3"
 )
 
-func BasicAuthCheckMiddleware(svc *usecase.AuthenticationServiceImpl) fiber.Handler {
+func BasicAuthCheckMiddleware(svc port.AuthenticationService) fiber.Handler {
 	return func(c fiber.Ctx) error {
 		h := c.Get("Authorization")
 		if h == "" {

@@ -1,4 +1,4 @@
-app:
+server:
   name: "zenrow-service"
   port: 8080
   host: localhost

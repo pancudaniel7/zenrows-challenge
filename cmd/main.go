@@ -13,6 +13,7 @@ import (
 
 	"zenrows-challenge/internal/infra"
 	"zenrows-challenge/internal/pkg/applog"
+	"zenrows-challenge/internal/pkg/middleware"
 )
 
 var (
@@ -34,27 +35,35 @@ var (
 	deviceTemplateHandler port.DeviceTemplateHandler
 )
 
+func initComponents() {
+	userRepo = repo.NewUserRepoImpl(logger, db)
+	deviceTemplatesRepo = repo.NewDeviceTemplateRepoImpl(logger, db)
+
+	userSvc = usecase.NewAuthenticationService(logger, &wg, userRepo)
+
+	deviceTemplateSvc = usecase.NewDeviceTemplateServiceImpl(logger, deviceTemplatesRepo)
+	deviceTemplateHandler = http.NewDeviceTemplateHandlerImpl(logger, deviceTemplateSvc)
+}
+
+func initRoutes(server *fiber.App) {
+	// Unprotected route
+	server.Get("/health", func(c fiber.Ctx) error { return c.SendString("UP!") })
+
+	// Protected routes group: apply BasicAuth to everything except /health
+	protected := server.Group("/", middleware.BasicAuthCheckMiddleware(userSvc))
+	protected.Get("/device-templates", deviceTemplateHandler.List)
+}
+
 func main() {
 	if err := infra.LoadConfig(); err != nil {
 		log.Fatal("Failed to load config: ", err)
 	}
 	logger = applog.NewAppDefaultLogger()
-
 	db = infra.ConnectToDatabase()
+
+	initComponents()
 	server = infra.StartServer(logger, &wg)
+	initRoutes(server)
 
-	userRepo = repo.NewUserRepoImpl(logger, db)
-	deviceTemplatesRepo = repo.NewDeviceTemplateRepoImpl(logger, db)
-
-	userSvc = usecase.NewAuthenticationService(logger, &wg, userRepo)
-	deviceTemplateSvc = usecase.NewDeviceTemplateServiceImpl(logger, deviceTemplatesRepo)
-
-	deviceTemplateHandler = http.NewDeviceTemplateHandlerImpl(logger, deviceTemplateSvc)
-
-	//scb := func() error {
-	//	logger.Debug("Executing graceful shutdown callback...")
-	//	return nil
-	//}
-	infra.ShutdownServer(logger, &wg, server, nil)
-
+	infra.GracefulShutdownServer(logger, &wg, server, nil)
 }

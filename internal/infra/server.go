@@ -30,7 +30,7 @@ func StartServer(logger applog.AppLogger, wg *sync.WaitGroup) *fiber.App {
 	return app
 }
 
-func ShutdownServer(logger applog.AppLogger, wg *sync.WaitGroup, server *fiber.App, processTerminationCallBack func() error) {
+func GracefulShutdownServer(logger applog.AppLogger, wg *sync.WaitGroup, server *fiber.App, processTerminationCallBack func() error) {
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt, syscall.SIGTERM)
 	defer signal.Stop(quit)
