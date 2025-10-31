@@ -7,5 +7,14 @@ type UserRepo interface {
 }
 
 type DeviceTemplateRepo interface {
-	GetDeviceTemplates() ([]entity.DeviceTemplate, error)
+    GetDeviceTemplates() ([]entity.DeviceTemplate, error)
+}
+
+type DeviceProfileRepo interface {
+    ListDeviceProfiles(userID string, page, pageSize int) ([]entity.DeviceProfile, error)
+    CreateDeviceProfile(dp *entity.DeviceProfile) error
+    UpdateDeviceProfileSelective(dp *entity.DeviceProfile) error
+    GetDeviceProfileByID(id string) (*entity.DeviceProfile, error)
+    UpdateDeviceProfile(dp *entity.DeviceProfile) error
+    DeleteDeviceProfile(id string) error
 }

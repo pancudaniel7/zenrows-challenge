@@ -13,13 +13,14 @@ type DeviceTemplateRepoImpl struct {
 }
 
 func NewDeviceTemplateRepoImpl(log applog.AppLogger, db *gorm.DB) *DeviceTemplateRepoImpl {
-	return &DeviceTemplateRepoImpl{log: log, db: db}
+    return &DeviceTemplateRepoImpl{log: log, db: db}
 }
 
 func (r *DeviceTemplateRepoImpl) GetDeviceTemplates() ([]entity.DeviceTemplate, error) {
-	var out []entity.DeviceTemplate
-	if err := r.db.Find(&out).Error; err != nil {
-		return nil, err
-	}
-	return out, nil
+    r.log.Trace("device_template.list")
+    var out []entity.DeviceTemplate
+    if err := r.db.Find(&out).Error; err != nil {
+        return nil, err
+    }
+    return out, nil
 }

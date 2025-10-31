@@ -46,7 +46,7 @@ func BasicAuthCheckMiddleware(svc port.AuthenticationService) fiber.Handler {
 		if id == "" {
 			return fiber.ErrUnauthorized
 		}
-		c.Locals("auth_user_id", id)
+		c.Locals("UserID", id)
 		return c.Next()
 	}
 }

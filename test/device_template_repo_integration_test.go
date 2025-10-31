@@ -12,9 +12,13 @@ import (
 )
 
 func TestDeviceTemplateRepositoryIntegration(t *testing.T) {
-	if err := util.LoadConfig(); err != nil {
-		assert.FailNow(t, err.Error())
-	}
+    if err := util.LoadConfig(); err != nil {
+        assert.FailNow(t, err.Error())
+    }
+
+    if _, err := util.InitTestContainers(t); err != nil {
+        assert.FailNow(t, err.Error())
+    }
 
 	dbConn, err := util.NewTestDB()
 	if err != nil {
