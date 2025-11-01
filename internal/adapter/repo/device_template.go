@@ -28,7 +28,13 @@ func (r *DeviceTemplateRepoImpl) GetDeviceTemplates() ([]entity.DeviceTemplate, 
 
 func (r *DeviceTemplateRepoImpl) GetDeviceTemplateByID(id *uuid.UUID) (*entity.DeviceTemplate, error) {
 	r.log.Trace("device_template.get", "id", id.String())
-	c
-
-	panic("implement me")
+	if id == nil {
+		return nil, gorm.ErrRecordNotFound
+	}
+	r.log.Trace("device_template.get", "id", id.String())
+	var out entity.DeviceTemplate
+	if err := r.db.First(&out, "id = ?", *id).Error; err != nil {
+		return nil, err
+	}
+	return &out, nil
 }

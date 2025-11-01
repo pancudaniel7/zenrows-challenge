@@ -102,7 +102,7 @@ func (s *DeviceProfileServiceImpl) DeleteDeviceProfile(ctx context.Context, id s
 		return apperr.NewInvalidArgErr("invalid id", err)
 	}
 
-	if err := s.repo.DeleteDeviceProfile(id, userID); err != nil {
+	if err := s.repo.DeleteDeviceProfile(userID, id); err != nil {
 		s.log.Error("device_profile.delete failed: %v", err)
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return apperr.NewNotFoundErr("device profile not found", err)

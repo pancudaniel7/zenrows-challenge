@@ -42,6 +42,10 @@ var (
 )
 
 func initComponents() {
+	logger = applog.NewAppDefaultLogger()
+	db = infra.ConnectToDatabase()
+	v = validator.New()
+
 	userRepo = repo.NewUserRepoImpl(logger, db)
 	deviceTemplatesRepo = repo.NewDeviceTemplateRepoImpl(logger, db)
 	deviceProfileRepo = repo.NewDeviceProfileRepoImpl(logger, db)
@@ -50,7 +54,9 @@ func initComponents() {
 
 	deviceTemplateSvc = usecase.NewDeviceTemplateServiceImpl(logger, deviceTemplatesRepo)
 	deviceProfileSvc = usecase.NewDeviceProfileServiceImpl(logger, deviceProfileRepo, deviceTemplatesRepo, v)
+
 	deviceTemplateHandler = http.NewDeviceTemplateHandlerImpl(logger, deviceTemplateSvc)
+	deviceProfileHandler = http.NewDeviceProfileHandlerImpl(logger, deviceProfileSvc, v)
 }
 
 func initRoutes(server *fiber.App) {
@@ -60,17 +66,20 @@ func initRoutes(server *fiber.App) {
 	// Protected routes group: apply BasicAuth to everything except /health
 	protected := server.Group("/", middleware.BasicAuthCheckMiddleware(userSvc, v))
 	protected.Get("/device-templates", deviceTemplateHandler.List)
+	protected.Get("/device-profiles", deviceProfileHandler.ListDeviceProfilesByUserID)
+	protected.Post("/device-profiles", deviceProfileHandler.CreateDeviceProfile)
+	protected.Get("/device-profiles/:id", deviceProfileHandler.GetDeviceProfileByID)
+	protected.Put("/device-profiles/:id", deviceProfileHandler.UpdateDeviceProfile)
+	protected.Delete("/device-profiles/:id", deviceProfileHandler.DeleteDeviceProfile)
 }
 
 func main() {
 	if err := infra.LoadConfig(); err != nil {
 		log.Fatal("Failed to load config: ", err)
 	}
-	logger = applog.NewAppDefaultLogger()
-	db = infra.ConnectToDatabase()
-	v = validator.New()
 
 	initComponents()
+
 	server = infra.StartServer(logger, &wg)
 	initRoutes(server)
 

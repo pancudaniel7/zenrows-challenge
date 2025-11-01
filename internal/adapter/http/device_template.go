@@ -20,7 +20,7 @@ func (h *DeviceTemplateHandlerImpl) List(c fiber.Ctx) error {
 	h.log.Trace("DeviceTemplateHandlerImpl: List called")
 	items, err := h.svc.RetrieveDeviceTemplates()
 	if err != nil {
-		return h.handleError(c, err)
+		return handleError(c, err)
 	}
 	return c.JSON(items)
 }

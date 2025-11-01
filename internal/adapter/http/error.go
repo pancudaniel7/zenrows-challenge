@@ -9,7 +9,7 @@ import (
 )
 
 // handleError maps application errors to HTTP responses for device templates.
-func (h *DeviceTemplateHandlerImpl) handleError(c fiber.Ctx, err error) error {
+func handleError(c fiber.Ctx, err error) error {
 	var (
 		inv *apperr.InvalidArgErr
 		nf  *apperr.NotFoundErr

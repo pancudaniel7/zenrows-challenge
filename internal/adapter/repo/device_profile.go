@@ -25,12 +25,6 @@ func (r *DeviceProfileRepoImpl) ListDeviceProfiles(userID string, page, pageSize
 	if err != nil {
 		return nil, err
 	}
-	if page < 1 {
-		page = 1
-	}
-	if pageSize <= 0 {
-		pageSize = 20
-	}
 	if pageSize > 100 {
 		pageSize = 100
 	}
@@ -59,10 +53,6 @@ func (r *DeviceProfileRepoImpl) UpdateDeviceProfile(dp *entity.DeviceProfile) er
 	return r.db.Model(&entity.DeviceProfile{}).
 		Where("id = ? AND user_id = ?", dp.ID, dp.UserID).
 		Updates(dp).Error
-}
-
-func (r *DeviceProfileRepoImpl) UpdateDeviceProfileSelective(dp *entity.DeviceProfile) error {
-	return r.UpdateDeviceProfile(dp)
 }
 
 func (r *DeviceProfileRepoImpl) DeleteDeviceProfile(userID, id string) error {

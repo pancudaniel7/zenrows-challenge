@@ -18,7 +18,6 @@ type DeviceTemplateRepo interface {
 type DeviceProfileRepo interface {
 	ListDeviceProfiles(userID string, page, pageSize int) ([]entity.DeviceProfile, error)
 	CreateDeviceProfile(dp *entity.DeviceProfile) error
-	UpdateDeviceProfileSelective(dp *entity.DeviceProfile) error
 	UpdateDeviceProfile(dp *entity.DeviceProfile) error
 	DeleteDeviceProfile(userID, id string) error
 }
