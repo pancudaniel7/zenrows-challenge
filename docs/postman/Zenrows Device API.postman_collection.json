@@ -1,0 +1,351 @@
+{
+	"info": {
+		"_postman_id": "1dfb1cb4-ceb7-48ae-9ffe-33b6151cf28c",
+		"name": "Zenrows Device API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "83223"
+	},
+	"item": [
+		{
+			"name": "Device Templates",
+			"item": [
+				{
+					"name": "List Device Templates",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"",
+									"pm.test(\"Status is 200\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Body is an array (or serializable)\", function () {",
+									"  let json;",
+									"  try { json = pm.response.json(); }",
+									"  catch (e) { pm.expect.fail(\"Response is not JSON\"); }",
+									"  pm.expect(Array.isArray(json)).to.be.true;",
+									"  if (json.length > 0) {",
+									"    const first = json[0];",
+									"    const id = first.id || first.ID || first.uuid || first.Uuid || null;",
+									"    if (id) {",
+									"      pm.environment.set(\"template_id\", id);",
+									"    }",
+									"  }",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Basic {{bob_credentials}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/device-templates",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"device-templates"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Device Profiles",
+			"item": [
+				{
+					"name": "List Device Profiles (by user)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"",
+									"pm.test(\"Status is 200\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Returns JSON array\", function () {",
+									"  const json = pm.response.json();",
+									"  pm.expect(Array.isArray(json)).to.be.true;",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Basic {{bob_credentials}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/device-profiles?page={{page}}&page_size={{page_size}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"device-profiles"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "{{page}}"
+								},
+								{
+									"key": "page_size",
+									"value": "{{page_size}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Device Profile",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"",
+									"pm.test(\"Capture created device_profile_id once\", function () {",
+									"  const json = pm.response.json();",
+									"  const id = json.id || json.ID || json.uuid || json.Uuid;",
+									"  pm.expect(id, \"id should exist on create response\").to.exist;",
+									"",
+									"  if (pm.environment.get(\"device_profile_id\")) {",
+									"    pm.environment.set(\"device_profile_id\", id);",
+									"  }",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Basic {{bob_credentials}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n//   \"template_id\": \"{{template_id}}\",\n  \"name\": \"My Pixel 7\",\n  \"device_type\": \"mobile\",\n  \"width\": 1080,\n  \"height\": 2400,\n  \"user_agent\": \"Mozilla/5.0 (Linux; Android 14; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Mobile Safari/537.36\",\n  \"country_code\": \"RO\",\n  \"custom_headers\": {\n    \"Accept-Language\": \"en-US,en;q=0.9\"\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/device-profiles",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"device-profiles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Device Profile",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"",
+									"pm.test(\"Status is 200\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"pm.test(\"Update reflected\", function () {",
+									"  const json = pm.response.json();",
+									"  pm.expect(json.name || json.Name).to.match(/Updated/i);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Basic {{bob_credentials}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Updated Pixel 7\",\n  \"width\": 1170,\n  \"country_code\": \"US\",\n  \"device_type\": \"desktop\",\n  \"custom_headers\": {\n    \"X-Debug\": \"true\"\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/device-profiles/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"device-profiles",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{device_profile_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Device Profile",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"",
+									"pm.test(\"Status is 204 No Content\", function () {",
+									"  pm.response.to.have.status(204);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Basic {{bob_credentials}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/device-profiles/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"device-profiles",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{device_profile_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Health",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/health",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"health"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{access_token}}",
+				"type": "string"
+			}
+		]
+	}
+}

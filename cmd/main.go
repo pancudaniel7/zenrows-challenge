@@ -68,7 +68,6 @@ func initRoutes(server *fiber.App) {
 	protected.Get("/device-templates", deviceTemplateHandler.List)
 	protected.Get("/device-profiles", deviceProfileHandler.ListDeviceProfilesByUserID)
 	protected.Post("/device-profiles", deviceProfileHandler.CreateDeviceProfile)
-	protected.Get("/device-profiles/:id", deviceProfileHandler.GetDeviceProfileByID)
 	protected.Put("/device-profiles/:id", deviceProfileHandler.UpdateDeviceProfile)
 	protected.Delete("/device-profiles/:id", deviceProfileHandler.DeleteDeviceProfile)
 }

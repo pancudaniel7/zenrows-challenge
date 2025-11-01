@@ -145,7 +145,6 @@ func newDeviceProfileSuite(t *testing.T, withAuth bool, svc port.DeviceProfileSe
 	}
 	app.Get("/device-profiles", handler.ListDeviceProfilesByUserID)
 	app.Post("/device-profiles", handler.CreateDeviceProfile)
-	app.Get("/device-profiles/:id", handler.GetDeviceProfileByID)
 	app.Put("/device-profiles/:id", handler.UpdateDeviceProfile)
 	app.Delete("/device-profiles/:id", handler.DeleteDeviceProfile)
 

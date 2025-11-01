@@ -14,8 +14,6 @@ type DeviceProfileHandler interface {
 	ListDeviceProfilesByUserID(c fiber.Ctx) error
 	// CreateDeviceProfile persists a new device profile.
 	CreateDeviceProfile(c fiber.Ctx) error
-	// GetDeviceProfileByID retrieves a specific device profile.
-	GetDeviceProfileByID(c fiber.Ctx) error
 	// UpdateDeviceProfile modifies an existing device profile.
 	UpdateDeviceProfile(c fiber.Ctx) error
 	// DeleteDeviceProfile removes a device profile.

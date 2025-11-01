@@ -9,12 +9,12 @@ services:
     depends_on:
       - postgres
     environment:
-      DATABASE_HOST: postgres
-      DATABASE_PORT: 5432
-      DATABASE_USER: ${POSTGRES_USER:-app}
-      DATABASE_PASSWORD: ${POSTGRES_PASSWORD:-app}
-      DATABASE_NAME: ${POSTGRES_DB:-zenrows}
-      DATABASE_SSLMODE: disable
+      ZENROWS_DATABASE_HOST: postgres
+      ZENROWS_DATABASE_PORT: 5432
+      ZENROWS_DATABASE_USER: ${POSTGRES_USER:-app}
+      ZENROWS_DATABASE_PASSWORD: ${POSTGRES_PASSWORD:-app}
+      ZENROWS_DATABASE_NAME: ${POSTGRES_DB:-zenrows}
+      ZENROWS_DATABASE_SSLMODE: disable
     ports:
       - "8080:8080"
     restart: unless-stopped
