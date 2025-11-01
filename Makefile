@@ -14,6 +14,10 @@ docker-up:
 	@docker compose -f deployments/docker-compose.yml up -d 2>/dev/null \
 		|| docker-compose -f deployments/docker-compose.yml up -d
 
+docker-down:
+	@echo "Shutting down Docker Compose stack..."
+	@docker compose -f deployments/docker-compose.yml down -v
+
 unit-tests:
 	@echo "Running unit tests..."
 	@$(GO) test -v $(UNIT_PACKAGES)

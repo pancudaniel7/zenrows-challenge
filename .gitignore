@@ -4,7 +4,6 @@ target/
 bin/
 *.out
 *.iml
-*.md
 
 .cache/
 .gocache/
