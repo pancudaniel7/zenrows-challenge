@@ -26,40 +26,50 @@ func (e appError) Unwrap() error     { return e.cause }
 
 type InvalidArgErr struct{ appError }
 
+// NewInvalidArgErr builds an INVALID_ARGUMENT error for bad client input.
 func NewInvalidArgErr(msg string, cause error) *InvalidArgErr {
 	return &InvalidArgErr{appError: newAppError("INVALID_ARGUMENT", msg, cause)}
 }
 
+// Error renders the InvalidArgErr as a string.
 func (e *InvalidArgErr) Error() string { return e.appError.error() }
 
 type NotFoundErr struct{ appError }
 
+// NewNotFoundErr builds a NOT_FOUND error when a resource is missing.
 func NewNotFoundErr(msg string, cause error) *NotFoundErr {
 	return &NotFoundErr{appError: newAppError("NOT_FOUND", msg, cause)}
 }
 
+// Error renders the NotFoundErr as a string.
 func (e *NotFoundErr) Error() string { return e.appError.error() }
 
 type AlreadyExistsErr struct{ appError }
 
+// NewAlreadyExistsErr builds an ALREADY_EXISTS error for duplicate resources.
 func NewAlreadyExistsErr(msg string, cause error) *AlreadyExistsErr {
 	return &AlreadyExistsErr{appError: newAppError("ALREADY_EXISTS", msg, cause)}
 }
 
+// Error renders the AlreadyExistsErr as a string.
 func (e *AlreadyExistsErr) Error() string { return e.appError.error() }
 
 type NotAuthorizedErr struct{ appError }
 
+// NewNotAuthorizedErr builds a NOT_AUTHORIZED error for failed authz/authn.
 func NewNotAuthorizedErr(msg string, cause error) *NotAuthorizedErr {
 	return &NotAuthorizedErr{appError: newAppError("NOT_AUTHORIZED", msg, cause)}
 }
 
+// Error renders the NotAuthorizedErr as a string.
 func (e *NotAuthorizedErr) Error() string { return e.appError.error() }
 
 type InternalErr struct{ appError }
 
+// NewInternalErr builds an INTERNAL_ERROR for unexpected failures.
 func NewInternalErr(msg string, cause error) *InternalErr {
 	return &InternalErr{appError: newAppError("INTERNAL_ERROR", msg, cause)}
 }
 
+// Error renders the InternalErr as a string.
 func (e *InternalErr) Error() string { return e.appError.error() }

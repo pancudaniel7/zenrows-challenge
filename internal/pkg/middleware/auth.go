@@ -10,8 +10,11 @@ import (
 	"github.com/gofiber/fiber/v3"
 )
 
+// AuthUserIDKey is the key stored in Fiber locals for the authenticated user's ID.
 const AuthUserIDKey = "auth_user_id"
 
+// BasicAuthCheckMiddleware validates HTTP Basic credentials and stores the user ID
+// in the context before passing control to the next handler.
 func BasicAuthCheckMiddleware(svc port.AuthenticationService, v *validator.Validate) fiber.Handler {
 	return func(c fiber.Ctx) error {
 		h := c.Get("Authorization")

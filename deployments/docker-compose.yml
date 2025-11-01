@@ -1,6 +1,24 @@
 version: "3.9"
 
 services:
+  app:
+    build:
+      context: ..
+      dockerfile: build/Dockerfile
+    container_name: zenrows-app
+    depends_on:
+      - postgres
+    environment:
+      DATABASE_HOST: postgres
+      DATABASE_PORT: 5432
+      DATABASE_USER: ${POSTGRES_USER:-app}
+      DATABASE_PASSWORD: ${POSTGRES_PASSWORD:-app}
+      DATABASE_NAME: ${POSTGRES_DB:-zenrows}
+      DATABASE_SSLMODE: disable
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+
   postgres:
     image: postgres:16
     container_name: postgres-database

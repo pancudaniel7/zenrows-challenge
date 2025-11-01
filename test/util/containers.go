@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 	"sort"
 	"strconv"
+	"strings"
 	"testing"
 	"time"
 
@@ -113,10 +114,10 @@ func pointViperToContainer(host string, port int, dbName, dbUser, dbPass string)
 // applyInitScripts connects to the new DB and executes all SQL files from
 // deployments/postgres in lexical order.
 func applyInitScripts(host string, port int, dbName, dbUser, dbPass string) error {
-    dsn := fmt.Sprintf("host=%s port=%d dbname=%s user=%s password=%s sslmode=disable", host, port, dbName, dbUser, dbPass)
-    gdb, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
-    if err != nil {
-        return err
+	dsn := fmt.Sprintf("host=%s port=%d dbname=%s user=%s password=%s sslmode=disable", host, port, dbName, dbUser, dbPass)
+	gdb, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	if err != nil {
+		return err
     }
     scriptsDir, err := locateScriptsDir()
     if err != nil {
@@ -137,7 +138,11 @@ func applyInitScripts(host string, port int, dbName, dbUser, dbPass string) erro
 		}
 	}
 	sort.Strings(files)
+	skipDeviceTemplates := strings.EqualFold(os.Getenv("SKIP_DEVICE_TEMPLATE_SEED"), "true")
 	for _, f := range files {
+		if skipDeviceTemplates && strings.Contains(strings.ToLower(filepath.Base(f)), "device_template") {
+			continue
+		}
 		b, err := os.ReadFile(f)
 		if err != nil {
 			return err
