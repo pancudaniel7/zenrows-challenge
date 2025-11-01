@@ -1,9 +1,9 @@
 package util
 
 import (
-    "context"
+	"context"
 
-    "github.com/gofiber/fiber/v3"
+	"github.com/gofiber/fiber/v3"
 )
 
 // ctxKey defines a private type for context keys to avoid collisions.
@@ -16,11 +16,11 @@ const CtxAuthUserIDKey ctxKey = "auth_user_id"
 // ContextWithFiberLocals returns a stdlib context that includes selected
 // values from Fiber locals.
 func ContextWithFiberLocals(c fiber.Ctx) context.Context {
-    ctx := context.Background()
+	ctx := context.Background()
 
-    if v := c.Locals("auth_user_id"); v != nil {
-        ctx = context.WithValue(ctx, CtxAuthUserIDKey, v)
-    }
+	if v := c.Locals("auth_user_id"); v != nil {
+		ctx = context.WithValue(ctx, CtxAuthUserIDKey, v)
+	}
 
-    return ctx
+	return ctx
 }

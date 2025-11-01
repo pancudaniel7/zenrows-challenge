@@ -2,82 +2,64 @@ package apperr
 
 import "fmt"
 
-type InvalidArgErr struct {
-	Msg   string
-	Cause error
+type appError struct {
+	code  string
+	msg   string
+	cause error
 }
 
-func (e *InvalidArgErr) Error() string {
-	if e.Cause != nil {
-		return fmt.Sprintf("[INVALID_ARGUMENT] %s: %v", e.Msg, e.Cause)
+func newAppError(code, msg string, cause error) appError {
+	return appError{code: code, msg: msg, cause: cause}
+}
+
+func (e appError) error() string {
+	if e.cause != nil {
+		return fmt.Sprintf("[%s] %s: %v", e.code, e.msg, e.cause)
 	}
-	return "[INVALID_ARGUMENT] " + e.Msg
-}
-func (e *InvalidArgErr) Code() string      { return "INVALID_ARGUMENT" }
-func (e *InvalidArgErr) Message() string   { return e.Msg }
-func (e *InvalidArgErr) CauseError() error { return e.Cause }
-func (e *InvalidArgErr) Unwrap() error     { return e.Cause }
-
-type NotFoundErr struct {
-	Msg   string
-	Cause error
+	return fmt.Sprintf("[%s] %s", e.code, e.msg)
 }
 
-func (e *NotFoundErr) Error() string {
-	if e.Cause != nil {
-		return fmt.Sprintf("[NOT_FOUND] %s: %v", e.Msg, e.Cause)
-	}
-	return "[NOT_FOUND] " + e.Msg
-}
-func (e *NotFoundErr) Code() string      { return "NOT_FOUND" }
-func (e *NotFoundErr) Message() string   { return e.Msg }
-func (e *NotFoundErr) CauseError() error { return e.Cause }
-func (e *NotFoundErr) Unwrap() error     { return e.Cause }
+func (e appError) Code() string      { return e.code }
+func (e appError) Message() string   { return e.msg }
+func (e appError) CauseError() error { return e.cause }
+func (e appError) Unwrap() error     { return e.cause }
 
-type AlreadyExistsErr struct {
-	Msg   string
-	Cause error
+type InvalidArgErr struct{ appError }
+
+func NewInvalidArgErr(msg string, cause error) *InvalidArgErr {
+	return &InvalidArgErr{appError: newAppError("INVALID_ARGUMENT", msg, cause)}
 }
 
-func (e *AlreadyExistsErr) Error() string {
-	if e.Cause != nil {
-		return fmt.Sprintf("[ALREADY_EXISTS] %s: %v", e.Msg, e.Cause)
-	}
-	return "[ALREADY_EXISTS] " + e.Msg
-}
-func (e *AlreadyExistsErr) Code() string      { return "ALREADY_EXISTS" }
-func (e *AlreadyExistsErr) Message() string   { return e.Msg }
-func (e *AlreadyExistsErr) CauseError() error { return e.Cause }
-func (e *AlreadyExistsErr) Unwrap() error     { return e.Cause }
+func (e *InvalidArgErr) Error() string { return e.appError.error() }
 
-type NotAuthorizedErr struct {
-	Msg   string
-	Cause error
+type NotFoundErr struct{ appError }
+
+func NewNotFoundErr(msg string, cause error) *NotFoundErr {
+	return &NotFoundErr{appError: newAppError("NOT_FOUND", msg, cause)}
 }
 
-func (e *NotAuthorizedErr) Error() string {
-	if e.Cause != nil {
-		return fmt.Sprintf("[NOT_AUTHORIZED] %s: %v", e.Msg, e.Cause)
-	}
-	return "[NOT_AUTHORIZED] " + e.Msg
-}
-func (e *NotAuthorizedErr) Code() string      { return "NOT_AUTHORIZED" }
-func (e *NotAuthorizedErr) Message() string   { return e.Msg }
-func (e *NotAuthorizedErr) CauseError() error { return e.Cause }
-func (e *NotAuthorizedErr) Unwrap() error     { return e.Cause }
+func (e *NotFoundErr) Error() string { return e.appError.error() }
 
-type InternalErr struct {
-	Msg   string
-	Cause error
+type AlreadyExistsErr struct{ appError }
+
+func NewAlreadyExistsErr(msg string, cause error) *AlreadyExistsErr {
+	return &AlreadyExistsErr{appError: newAppError("ALREADY_EXISTS", msg, cause)}
 }
 
-func (e *InternalErr) Error() string {
-	if e.Cause != nil {
-		return fmt.Sprintf("[INTERNAL_ERROR] %s: %v", e.Msg, e.Cause)
-	}
-	return "[INTERNAL_ERROR] " + e.Msg
+func (e *AlreadyExistsErr) Error() string { return e.appError.error() }
+
+type NotAuthorizedErr struct{ appError }
+
+func NewNotAuthorizedErr(msg string, cause error) *NotAuthorizedErr {
+	return &NotAuthorizedErr{appError: newAppError("NOT_AUTHORIZED", msg, cause)}
 }
-func (e *InternalErr) Code() string      { return "INTERNAL_ERROR" }
-func (e *InternalErr) Message() string   { return e.Msg }
-func (e *InternalErr) CauseError() error { return e.Cause }
-func (e *InternalErr) Unwrap() error     { return e.Cause }
+
+func (e *NotAuthorizedErr) Error() string { return e.appError.error() }
+
+type InternalErr struct{ appError }
+
+func NewInternalErr(msg string, cause error) *InternalErr {
+	return &InternalErr{appError: newAppError("INTERNAL_ERROR", msg, cause)}
+}
+
+func (e *InternalErr) Error() string { return e.appError.error() }

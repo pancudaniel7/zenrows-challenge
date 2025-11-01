@@ -6,10 +6,13 @@ import (
 
 	"zenrows-challenge/internal/core/port"
 
+	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v3"
 )
 
-func BasicAuthCheckMiddleware(svc port.AuthenticationService) fiber.Handler {
+const AuthUserIDKey = "auth_user_id"
+
+func BasicAuthCheckMiddleware(svc port.AuthenticationService, v *validator.Validate) fiber.Handler {
 	return func(c fiber.Ctx) error {
 		h := c.Get("Authorization")
 		if h == "" {
@@ -38,15 +41,15 @@ func BasicAuthCheckMiddleware(svc port.AuthenticationService) fiber.Handler {
 			return fiber.ErrUnauthorized
 		}
 
-		id, err := svc.CheckCredentials(user, pass)
+		userID, err := svc.CheckCredentials(user, pass)
 		if err != nil {
 			return fiber.ErrUnauthorized
 		}
 
-		if id == "" {
+		if userID == "" && v.Var(userID, "required,uuid4") != nil {
 			return fiber.ErrUnauthorized
 		}
-		c.Locals("UserID", id)
+		c.Locals(AuthUserIDKey, userID)
 		return c.Next()
 	}
 }

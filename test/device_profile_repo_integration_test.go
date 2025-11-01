@@ -18,11 +18,11 @@ import (
 )
 
 func setupDPRepo(t *testing.T) (*repo.DeviceProfileRepoImpl, *entity.User) {
-    t.Helper()
-    require.NoError(t, util.LoadConfig())
-    if _, err := util.InitTestContainers(t); err != nil {
-        require.NoError(t, err)
-    }
+	t.Helper()
+	require.NoError(t, util.LoadConfig())
+	if _, err := util.InitTestContainers(t); err != nil {
+		require.NoError(t, err)
+	}
 	dbConn, err := util.NewTestDB()
 	require.NoError(t, err)
 	logger := applog.NewAppDefaultLogger()
@@ -72,7 +72,7 @@ func TestDeviceProfileRepo_CreateDeviceProfile(t *testing.T) {
 	}
 }
 
-func TestDeviceProfileRepo_GetDeviceProfileByID(t *testing.T) {
+func TestDeviceProfileRepo_ListDeviceProfilesRetrievesCreatedProfile(t *testing.T) {
 	r, u := setupDPRepo(t)
 	dp := entity.DeviceProfile{UserID: u.ID, Name: "P1", DeviceType: "desktop"}
 	require.NoError(t, r.CreateDeviceProfile(&dp))
@@ -84,8 +84,15 @@ func TestDeviceProfileRepo_GetDeviceProfileByID(t *testing.T) {
 		{
 			name: "fetches by id",
 			run: func(t *testing.T) {
-				got, err := r.GetDeviceProfileByID(dp.ID.String())
+				items, err := r.ListDeviceProfiles(u.ID.String(), 1, 10)
 				require.NoError(t, err)
+				var got *entity.DeviceProfile
+				for i := range items {
+					if items[i].ID == dp.ID {
+						got = &items[i]
+						break
+					}
+				}
 				require.NotNil(t, got)
 				assert.Equal(t, dp.ID, got.ID)
 				assert.Equal(t, u.ID, got.UserID)
@@ -115,10 +122,18 @@ func TestDeviceProfileRepo_UpdateDeviceProfileSelective(t *testing.T) {
 				newWidth := 1280
 				newUA := "UA/1"
 				patch := entity.DeviceProfile{ID: dp.ID, UserID: dp.UserID, Name: "Psel2", Width: &newWidth, UserAgent: &newUA}
-				require.NoError(t, r.UpdateDeviceProfileSelective(&patch))
+				require.NoError(t, r.UpdateDeviceProfile(&patch))
 
-				got, err := r.GetDeviceProfileByID(dp.ID.String())
+				items, err := r.ListDeviceProfiles(u.ID.String(), 1, 10)
 				require.NoError(t, err)
+				var got *entity.DeviceProfile
+				for i := range items {
+					if items[i].ID == dp.ID {
+						got = &items[i]
+						break
+					}
+				}
+				require.NotNil(t, got)
 				assert.Equal(t, "Psel2", got.Name)
 				if assert.NotNil(t, got.Width) {
 					assert.Equal(t, newWidth, *got.Width)
@@ -182,8 +197,16 @@ func TestDeviceProfileRepo_UpdateDeviceProfile(t *testing.T) {
 			run: func(t *testing.T) {
 				dp.DeviceType = "mobile"
 				require.NoError(t, r.UpdateDeviceProfile(&dp))
-				got, err := r.GetDeviceProfileByID(dp.ID.String())
+				items, err := r.ListDeviceProfiles(u.ID.String(), 1, 10)
 				require.NoError(t, err)
+				var got *entity.DeviceProfile
+				for i := range items {
+					if items[i].ID == dp.ID {
+						got = &items[i]
+						break
+					}
+				}
+				require.NotNil(t, got)
 				assert.Equal(t, "mobile", got.DeviceType)
 			},
 		},
@@ -206,9 +229,13 @@ func TestDeviceProfileRepo_DeleteDeviceProfile(t *testing.T) {
 		{
 			name: "deletes by id",
 			run: func(t *testing.T) {
-				require.NoError(t, r.DeleteDeviceProfile(dp.ID.String()))
-				_, err := r.GetDeviceProfileByID(dp.ID.String())
-				require.Error(t, err)
+				require.NoError(t, r.DeleteDeviceProfile(u.ID.String(), dp.ID.String()))
+				items, err := r.ListDeviceProfiles(u.ID.String(), 1, 10)
+				require.NoError(t, err)
+				assert.Len(t, items, 0)
+				for _, item := range items {
+					require.NotEqual(t, dp.ID, item.ID)
+				}
 			},
 		},
 	}
