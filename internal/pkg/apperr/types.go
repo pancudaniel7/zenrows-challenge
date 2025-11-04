@@ -12,7 +12,7 @@ func newAppError(code, msg string, cause error) appError {
 	return appError{code: code, msg: msg, cause: cause}
 }
 
-func (e appError) error() string {
+func (e appError) Error() string {
 	if e.cause != nil {
 		return fmt.Sprintf("[%s] %s: %v", e.code, e.msg, e.cause)
 	}
@@ -26,43 +26,43 @@ func (e appError) Unwrap() error     { return e.cause }
 
 type InvalidArgErr struct{ appError }
 
-// NewInvalidArgErr builds an INVALID_ARGUMENT error for bad client input.
+// NewInvalidArgErr builds an INVALID_ARGUMENT Error for bad client input.
 func NewInvalidArgErr(msg string, cause error) *InvalidArgErr {
 	return &InvalidArgErr{appError: newAppError("INVALID_ARGUMENT", msg, cause)}
 }
 
 // Error renders the InvalidArgErr as a string.
-func (e *InvalidArgErr) Error() string { return e.appError.error() }
+func (e *InvalidArgErr) Error() string { return e.appError.Error() }
 
 type NotFoundErr struct{ appError }
 
-// NewNotFoundErr builds a NOT_FOUND error when a resource is missing.
+// NewNotFoundErr builds a NOT_FOUND Error when a resource is missing.
 func NewNotFoundErr(msg string, cause error) *NotFoundErr {
 	return &NotFoundErr{appError: newAppError("NOT_FOUND", msg, cause)}
 }
 
 // Error renders the NotFoundErr as a string.
-func (e *NotFoundErr) Error() string { return e.appError.error() }
+func (e *NotFoundErr) Error() string { return e.appError.Error() }
 
 type AlreadyExistsErr struct{ appError }
 
-// NewAlreadyExistsErr builds an ALREADY_EXISTS error for duplicate resources.
+// NewAlreadyExistsErr builds an ALREADY_EXISTS Error for duplicate resources.
 func NewAlreadyExistsErr(msg string, cause error) *AlreadyExistsErr {
 	return &AlreadyExistsErr{appError: newAppError("ALREADY_EXISTS", msg, cause)}
 }
 
 // Error renders the AlreadyExistsErr as a string.
-func (e *AlreadyExistsErr) Error() string { return e.appError.error() }
+func (e *AlreadyExistsErr) Error() string { return e.appError.Error() }
 
 type NotAuthorizedErr struct{ appError }
 
-// NewNotAuthorizedErr builds a NOT_AUTHORIZED error for failed authz/authn.
+// NewNotAuthorizedErr builds a NOT_AUTHORIZED Error for failed authz/authn.
 func NewNotAuthorizedErr(msg string, cause error) *NotAuthorizedErr {
 	return &NotAuthorizedErr{appError: newAppError("NOT_AUTHORIZED", msg, cause)}
 }
 
 // Error renders the NotAuthorizedErr as a string.
-func (e *NotAuthorizedErr) Error() string { return e.appError.error() }
+func (e *NotAuthorizedErr) Error() string { return e.appError.Error() }
 
 type InternalErr struct{ appError }
 
@@ -72,4 +72,4 @@ func NewInternalErr(msg string, cause error) *InternalErr {
 }
 
 // Error renders the InternalErr as a string.
-func (e *InternalErr) Error() string { return e.appError.error() }
+func (e *InternalErr) Error() string { return e.appError.Error() }
